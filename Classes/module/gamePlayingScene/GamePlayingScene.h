@@ -18,6 +18,7 @@ public:
 	void ClickGameEnded(Ref* sender);
 
 private:
+	int i = 0;
 	Sprite* backgroundSprite;
 	float totalTime;
 };

@@ -2,7 +2,9 @@
 
 class EnemyController :public cocos2d::Sprite {
 public:
+	EnemyController();
 	static EnemyController* createAnEnemy();
 private:
-	EnemyController();
+	EnemyController* enemy;
+	//Point block;	
 };

@@ -1,15 +1,18 @@
 #include"GamePlayingScene.h"
-#include"../../public/parameterManager/ParameterManager.h"
+//#include"../../public/parameterManager/ParameterManager.h"
 #include"Controller/setGameCacheController/SetGameCacheController.h"
 #include"Controller/archerController/archerController.h"
-#include"Model/Constant/Constant.h"
+//#include"Model/Constant/Constant.h"
 #include"Controller/progressTimeController/ProgressTimeController.h"
 #include"Controller\groundController\GroundController.h"
 #include"Controller\enemyController\EnemyController.h"
 #include"Controller\arrowController\ArrowController.h"
 #include"../levelChooseScene/LevelChooseScene.h"
+#include"Model\Enemy\Enemy.h"
 
 #define pi 3.141592654
+
+int i = 0;
 
 GamePlayingScene* GamePlayingScene::createScene(){
 	auto thisScene = new GamePlayingScene();
@@ -39,7 +42,7 @@ void GamePlayingScene::initial() {
 	this->addChild(GroundController::getInstance(),1);
 
 	//产生敌人
-	this->schedule(schedule_selector(GamePlayingScene::updateTimeToCreateEnemy), 3.0f);
+	this->schedule(schedule_selector(GamePlayingScene::updateTimeToCreateEnemy), 1.0f);
 
 	//物理世界监听
 	auto listener = EventListenerPhysicsContact::create();
@@ -118,17 +121,93 @@ bool GamePlayingScene::onContactBegan(PhysicsContact& contact)
 			contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
 		}
 	}
-	else if (tagA == Constant::getArrowTag() && tagB == Constant::getEnemyTag()) {
+	else if (tagA == Constant::getArrowTag() && tagB == Constant::getEnemyTag1()) {
 		if (contact.getShapeA()->getBody() != NULL && contact.getShapeA()->getBody()->getNode() != NULL) {
 			contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		}
+		if (contact.getShapeB()->getBody() != NULL && contact.getShapeB()->getBody()->getNode() != NULL) {
+			Enemy * e = (Enemy *)contact.getShapeB()->getBody()->getNode()->getParent();
+			Sprite* tmp = e->death((Sprite*)contact.getShapeB()->getBody()->getNode(), e->getMode());
+			this->addChild(tmp);
+			tmp->removeFromParent();
+			contact.getShapeB()->getBody()->getNode()->getParent()->removeFromParentAndCleanup(true);
+		}
+	}
+	else if (tagB == Constant::getArrowTag() && tagA == Constant::getEnemyTag1()) {
+		if (contact.getShapeA()->getBody() != NULL && contact.getShapeA()->getBody()->getNode() != NULL) {
+			Enemy * e = (Enemy *)contact.getShapeA()->getBody()->getNode()->getParent();
+			Sprite* tmp = e->death((Sprite*)contact.getShapeA()->getBody()->getNode(), e->getMode());
+			this->addChild(tmp);
+			tmp->removeFromParent();
+			contact.getShapeA()->getBody()->getNode()->getParent()->removeFromParentAndCleanup(true);
 		}
 		if (contact.getShapeB()->getBody() != NULL && contact.getShapeB()->getBody()->getNode() != NULL) {
 			contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
 		}
 	}
-	else if (tagB == Constant::getArrowTag() && tagA == Constant::getEnemyTag()) {
+	else if (tagA == Constant::getArrowTag() && tagB == Constant::getEnemyTag2()) {
 		if (contact.getShapeA()->getBody() != NULL && contact.getShapeA()->getBody()->getNode() != NULL) {
 			contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		}
+		if (contact.getShapeB()->getBody() != NULL && contact.getShapeB()->getBody()->getNode() != NULL) {
+			Enemy * e = (Enemy *)contact.getShapeB()->getBody()->getNode()->getParent();
+			if (e->getBlood() == 1){
+				Sprite* tmp = e->death((Sprite*)contact.getShapeB()->getBody()->getNode(), e->getMode());
+				
+				this->addChild(tmp);
+				tmp->removeFromParent();
+				contact.getShapeB()->getBody()->getNode()->getParent()->removeFromParentAndCleanup(true);
+			}
+			else
+				e->setBlood(e->getBlood() - 1);
+		}
+	}
+	else if (tagB == Constant::getArrowTag() && tagA == Constant::getEnemyTag2()) {
+		if (contact.getShapeA()->getBody() != NULL && contact.getShapeA()->getBody()->getNode() != NULL) {
+			Enemy * e = (Enemy *)contact.getShapeA()->getBody()->getNode()->getParent();
+			if (e->getBlood() == 1){
+				Sprite* tmp = e->death((Sprite*)contact.getShapeA()->getBody()->getNode(), e->getMode());
+
+				this->addChild(tmp);
+				tmp->removeFromParent();
+				contact.getShapeA()->getBody()->getNode()->getParent()->removeFromParentAndCleanup(true);
+			
+			}
+			else
+				e->setBlood(e->getBlood() - 1);
+		}
+		if (contact.getShapeB()->getBody() != NULL && contact.getShapeB()->getBody()->getNode() != NULL) {
+			contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		}
+	}
+	else if (tagA == Constant::getArrowTag() && tagB == Constant::getEnemyTag3()) {
+		if (contact.getShapeA()->getBody() != NULL && contact.getShapeA()->getBody()->getNode() != NULL) {
+			contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		}
+		if (contact.getShapeB()->getBody() != NULL && contact.getShapeB()->getBody()->getNode() != NULL) {
+			Enemy * e = (Enemy *)contact.getShapeB()->getBody()->getNode()->getParent();
+			if (e->getBlood() == 1){
+				Sprite* tmp = e->death((Sprite*)contact.getShapeB()->getBody()->getNode(), e->getMode());
+				this->addChild(tmp);
+				tmp->removeFromParent();
+				contact.getShapeB()->getBody()->getNode()->getParent()->removeFromParentAndCleanup(true);
+			}
+			else
+				e->setBlood(e->getBlood() - 1);
+		}
+	}
+	else if (tagB == Constant::getArrowTag() && tagA == Constant::getEnemyTag3()) {
+		if (contact.getShapeA()->getBody() != NULL && contact.getShapeA()->getBody()->getNode() != NULL) {
+			Enemy * e = (Enemy *)contact.getShapeB()->getBody()->getNode()->getParent();
+			if (e->getBlood() == 1){
+				Sprite* tmp = e->death((Sprite*)contact.getShapeA()->getBody()->getNode(), e->getMode());
+
+				this->addChild(tmp);
+				tmp->removeFromParent();
+				contact.getShapeB()->getBody()->getNode()->getParent()->removeFromParentAndCleanup(true);
+			}
+			else
+				e->setBlood(e->getBlood() - 1);
 		}
 		if (contact.getShapeB()->getBody() != NULL && contact.getShapeB()->getBody()->getNode() != NULL) {
 			contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
@@ -147,7 +226,12 @@ bool GamePlayingScene::onContactBegan(PhysicsContact& contact)
 }
 
 void GamePlayingScene::updateTimeToCreateEnemy(float dt) {
-	this->addChild(EnemyController::createAnEnemy(), 1);
+	if (i == 0)
+		this->addChild(EnemyController::createAnEnemy(), 1);
+	i++;
+	/*Enemy* t = new Enemy();
+	t->createEnemy(200, 300, 1, 1);
+	this->addChild(t, 1);*/
 }
 
 void GamePlayingScene::ClickGameEnded(Ref* sender)

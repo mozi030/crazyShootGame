@@ -10,6 +10,9 @@ public:
 	static string getProcessBar1Path();
 	static string getProcessBar2Path();
 	static string getFuturaPath();
+	static string getEnemySoldierPath();
+	static string getEnemyGoblinPath();
+	static string getEnemyArrowEnemyPath();
 
 	static string getArcherFrameName();
 	static string getEnemyFrameName();
@@ -19,6 +22,9 @@ public:
 	static int getGroundTag();
 	static int getArrowTag();
 	static int getEnemyTag();
+	static int getEnemyTag1();
+	static int getEnemyTag2();
+	static int getEnemyTag3();
 
 	static float getTimeLimit();
 
@@ -32,6 +38,9 @@ private:
 	static string processBar1Path;
 	static string processBar2Path;
 	static string futuraPath;
+	static string enemyGoblinPath;
+	static string enemySoldierPath;
+	static string enemyArrowEnemyPath;
 
 	static string archerFrameName;
 	static string enemyFrameName;
@@ -41,6 +50,9 @@ private:
 	static int groundTag;
 	static int arrowTag;
 	static int enemyTag;
+	static int enemyTag1;
+	static int enemyTag2;
+	static int enemyTag3;
 
 	static float timeLimit;
 };

@@ -1,15 +1,22 @@
 #include"EnemyController.h"
 USING_NS_CC;
-#include"../../../../public/parameterManager/ParameterManager.h"
-#include"../../Model/Constant/Constant.h"
+/*#include"../../../../public/parameterManager/ParameterManager.h"
+#include"../../Model/Constant/Constant.h"*/
+#include "../../Model/Enemy/Enemy.h"
 
-EnemyController::EnemyController(){}
+EnemyController::EnemyController(){
+
+	
+}
 
 EnemyController* EnemyController::createAnEnemy() {
-	Size visibleSize = ParameterManager::getVisibleSize();
-	int x = rand() % (int(visibleSize.width) - 100) + 100;
-	int y = rand() % (int(visibleSize.height) - 100) + 100;
 
+	auto  s = new  EnemyController();
+	/*Size visibleSize = ParameterManager::getVisibleSize();
+	//int x = rand() % (int(visibleSize.width) - 100) + 100;
+	//int y = rand() % (int(visibleSize.height) - 100) + 100;
+	int x = 300;
+	int y = 200;
 	//auto aSprite = (EnemyController*)Sprite::createWithSpriteFrameName(Constant::getEnemyFrameName());
 
 	auto aSprite = new EnemyController();
@@ -28,5 +35,14 @@ EnemyController* EnemyController::createAnEnemy() {
 	aSprite->runAction(MoveTo::create(ParameterManager::getEnemyMovingTime() * x / visibleSize.width, Vec2(0,30)));
 	aSprite->getPhysicsBody()->getFirstShape()->setTag(Constant::getEnemyTag());
 
-	return aSprite;
+
+	return aSprite;*/
+	auto t = new Enemy();
+	auto i = new Enemy();
+	i->createEnemy(1000, 200, 1, 1);
+	t->createEnemy(500, 200, 2,2);
+	s->addChild(t);
+	s->addChild(i);
+
+	return s;
 }
