@@ -1,18 +1,19 @@
-#include"GamePlayingScene.h"
-//#include"../../public/parameterManager/ParameterManager.h"
+ï»¿#include"GamePlayingScene.h"
+#include"../../public/parameterManager/ParameterManager.h"
 #include"Controller/setGameCacheController/SetGameCacheController.h"
 #include"Controller/archerController/archerController.h"
-//#include"Model/Constant/Constant.h"
+#include"Model/Constant/Constant.h"
 #include"Controller/progressTimeController/ProgressTimeController.h"
 #include"Controller\groundController\GroundController.h"
 #include"Controller\enemyController\EnemyController.h"
 #include"Controller\arrowController\ArrowController.h"
 #include"../levelChooseScene/LevelChooseScene.h"
-#include"Model\Enemy\Enemy.h"
+#include "cocostudio/CocoStudio.h"
+
+#include"Model/archer/archer.h"
+#include "ui/CocosGUI.h"
 
 #define pi 3.141592654
-
-int i = 0;
 
 GamePlayingScene* GamePlayingScene::createScene(){
 	auto thisScene = new GamePlayingScene();
@@ -24,34 +25,36 @@ GamePlayingScene* GamePlayingScene::createScene(){
 
 void GamePlayingScene::initial() {
 	this->getPhysicsWorld()->setGravity(ParameterManager::getGravity());
-
+//this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 	SetGameCacheController::getInstance()->setGameCache();
 
-	backgroundSprite = Sprite::create(Constant::getBackgroundPath());
-	backgroundSprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-	backgroundSprite->setPosition(0, 0);
-	this->addChild(backgroundSprite, 0);
+//	backgroundSprite = Sprite::create(Constant::getBackgroundPath());
+//	backgroundSprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+//	backgroundSprite->setPosition(0, 0);
+//	this->addChild(backgroundSprite, 0);
+	auto map = CSLoader::createNode("GameScene/GameScene.csb");
+	addChild(map);
 
-	//¼ÓÈë¹­¼ýÊÖ
-	this->addChild(archerController::getInstance(),1);
+	//åŠ å…¥å¼“ç®­æ‰‹
+	this->addChild(archer::getInstance(),1);
 	
-	//½ø¶ÈÌõ
+	//è¿›åº¦æ¡
 	this->addChild(ProgressTimeController::getInstance(), 1);
 
-	//µØ°å
+	//åœ°æ¿
 	this->addChild(GroundController::getInstance(),1);
 
-	//²úÉúµÐÈË
-	this->schedule(schedule_selector(GamePlayingScene::updateTimeToCreateEnemy), 1.0f);
-
-	//ÎïÀíÊÀ½ç¼àÌý
+	//äº§ç”Ÿæ•Œäºº
+	//this->schedule(schedule_selector(GamePlayingScene::updateTimeToCreateEnemy), 3.0f);
+	this->addChild(EnemyController::getInstance(),1);
+	//ç‰©ç†ä¸–ç•Œç›‘å¬
 	auto listener = EventListenerPhysicsContact::create();
 	listener->onContactBegin = CC_CALLBACK_1(GamePlayingScene::onContactBegan, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-	//´¥ÆÁ listener
+	//è§¦å± listener
 	EventListenerTouchOneByOne* screenListener = EventListenerTouchOneByOne::create();
-	screenListener->setSwallowTouches(true);// true²»ÏòÏÂ´¥Ãþ£¬¼òµ¥µãÀ´Ëµ£¬±ÈÈçÓÐÁ½¸ösprite ,AºÍ B£¬AÔÚÉÏBÔÚÏÂ£¨Î»ÖÃÖØµþ£©
+	screenListener->setSwallowTouches(true);// trueä¸å‘ä¸‹è§¦æ‘¸ï¼Œç®€å•ç‚¹æ¥è¯´ï¼Œæ¯”å¦‚æœ‰ä¸¤ä¸ªsprite ,Aå’Œ Bï¼ŒAåœ¨ä¸ŠBåœ¨ä¸‹ï¼ˆä½ç½®é‡å ï¼‰
 	screenListener->onTouchBegan = CC_CALLBACK_2(GamePlayingScene::onTouchBegan, this);
 	screenListener->onTouchEnded = CC_CALLBACK_2(GamePlayingScene::onTouchEnded, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(screenListener, this);
@@ -66,8 +69,25 @@ void GamePlayingScene::initial() {
 	gameEndedItem->setPosition(visibleSize.width, visibleSize.height);
 	gameEndedItem->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
 	menu->addChild(gameEndedItem);
+auto keyboardListener = EventListenerKeyboard::create();
+	keyboardListener->onKeyPressed = CC_CALLBACK_2(GamePlayingScene::onKeyPressed,this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener,this);
 }
 
+void GamePlayingScene::onKeyPressed(EventKeyboard::KeyCode keycode, Event*event) {
+	if (EventKeyboard::KeyCode::KEY_UP_ARROW == keycode) {
+
+	}
+	else if (EventKeyboard::KeyCode::KEY_DOWN_ARROW == keycode) {
+
+	}
+	else if (EventKeyboard::KeyCode::KEY_LEFT_ARROW == keycode) {
+		archer::getInstance()->runAction(MoveBy::create(1,Vec2(-20,0)));
+	}
+	else if (EventKeyboard::KeyCode::KEY_RIGHT_ARROW == keycode) {
+		archer::getInstance()->runAction(MoveBy::create(1, Vec2(20, 0)));
+	}
+}
 void GamePlayingScene::setGameParameter() {
 	this->getPhysicsWorld()->setGravity(ParameterManager::getGravity());
 	//this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
@@ -84,10 +104,12 @@ void GamePlayingScene::onTouchEnded(Touch *touch, Event *unused_event){
 	this->unschedule(schedule_selector(GamePlayingScene::updateTimeForProgressBar));
 
 	Vec2 touchEndedPosition = touch->getLocation();
+	xBegin = (float)archer::getInstance()->getPositionX() + 20.0;
+	yBegin = (float)archer::getInstance()->getPositionY() + 20.0;
 	xEnd = touchEndedPosition.x;
 	yEnd = touchEndedPosition.y;
-	//´´½¨¹­¼ý
-	this->addChild(ArrowController::createAnArrow(xEnd,yEnd), 3);
+	//Â´Â´Â½Â¨Â¹Â­Â¼Ã½
+	this->addChild(ArrowController::createAnArrow(xBegin, yBegin, xEnd, yEnd), 3);
 }
 
 void GamePlayingScene::updateTimeForProgressBar(float dt){
@@ -121,96 +143,43 @@ bool GamePlayingScene::onContactBegan(PhysicsContact& contact)
 			contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
 		}
 	}
-	else if (tagA == Constant::getArrowTag() && tagB == Constant::getEnemyTag1()) {
-		if (contact.getShapeA()->getBody() != NULL && contact.getShapeA()->getBody()->getNode() != NULL) {
-			contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	//Â¼Ã½Ã‰Ã¤ÂµÂ½ÂµÃÃˆÃ‹
+	else if (tagA == Constant::getArrowTag() && tagB >= Constant::getEnemyTag1() && tagB <= Constant::getEnemyTag3()) {
+		auto ABody = contact.getShapeA()->getBody();
+		auto BBody = contact.getShapeB()->getBody();
+		if (ABody != NULL && ABody->getNode() != NULL) {
+			ABody->getNode()->removeFromParentAndCleanup(true);
 		}
-		if (contact.getShapeB()->getBody() != NULL && contact.getShapeB()->getBody()->getNode() != NULL) {
-			Enemy * e = (Enemy *)contact.getShapeB()->getBody()->getNode()->getParent();
-			Sprite* tmp = e->death((Sprite*)contact.getShapeB()->getBody()->getNode(), e->getMode());
-			this->addChild(tmp);
-			tmp->removeFromParent();
-			contact.getShapeB()->getBody()->getNode()->getParent()->removeFromParentAndCleanup(true);
-		}
-	}
-	else if (tagB == Constant::getArrowTag() && tagA == Constant::getEnemyTag1()) {
-		if (contact.getShapeA()->getBody() != NULL && contact.getShapeA()->getBody()->getNode() != NULL) {
-			Enemy * e = (Enemy *)contact.getShapeA()->getBody()->getNode()->getParent();
-			Sprite* tmp = e->death((Sprite*)contact.getShapeA()->getBody()->getNode(), e->getMode());
-			this->addChild(tmp);
-			tmp->removeFromParent();
-			contact.getShapeA()->getBody()->getNode()->getParent()->removeFromParentAndCleanup(true);
-		}
-		if (contact.getShapeB()->getBody() != NULL && contact.getShapeB()->getBody()->getNode() != NULL) {
-			contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
-		}
-	}
-	else if (tagA == Constant::getArrowTag() && tagB == Constant::getEnemyTag2()) {
-		if (contact.getShapeA()->getBody() != NULL && contact.getShapeA()->getBody()->getNode() != NULL) {
-			contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
-		}
-		if (contact.getShapeB()->getBody() != NULL && contact.getShapeB()->getBody()->getNode() != NULL) {
-			Enemy * e = (Enemy *)contact.getShapeB()->getBody()->getNode()->getParent();
-			if (e->getBlood() == 1){
-				Sprite* tmp = e->death((Sprite*)contact.getShapeB()->getBody()->getNode(), e->getMode());
-				
-				this->addChild(tmp);
-				tmp->removeFromParent();
-				contact.getShapeB()->getBody()->getNode()->getParent()->removeFromParentAndCleanup(true);
-			}
-			else
-				e->setBlood(e->getBlood() - 1);
-		}
-	}
-	else if (tagB == Constant::getArrowTag() && tagA == Constant::getEnemyTag2()) {
-		if (contact.getShapeA()->getBody() != NULL && contact.getShapeA()->getBody()->getNode() != NULL) {
-			Enemy * e = (Enemy *)contact.getShapeA()->getBody()->getNode()->getParent();
-			if (e->getBlood() == 1){
-				Sprite* tmp = e->death((Sprite*)contact.getShapeA()->getBody()->getNode(), e->getMode());
+		if (BBody != NULL && BBody->getNode() != NULL) {
+			EnemyController::getInstance()->EnemyAttacked(BBody->getNode()->getParent(), BBody->getNode()->getPosition());
+			/*auto enemySprite = (Sprite*)BBody->getNode();
+			auto enemyNode = (Enemy*)enemySprite->getParent();
+			enemyNode->setBlood(enemyNode->getBlood() - 1);
+			if (enemyNode->getBlood() == 0) {
+			this->addChild(enemyNode->createDispearSprite(enemyNode->getMode()));
 
-				this->addChild(tmp);
-				tmp->removeFromParent();
-				contact.getShapeA()->getBody()->getNode()->getParent()->removeFromParentAndCleanup(true);
-			
-			}
-			else
-				e->setBlood(e->getBlood() - 1);
-		}
-		if (contact.getShapeB()->getBody() != NULL && contact.getShapeB()->getBody()->getNode() != NULL) {
-			contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+			enemySprite->removeFromParentAndCleanup(true);
+			enemyNode->removeFromParentAndCleanup(true);
+			}*/
 		}
 	}
-	else if (tagA == Constant::getArrowTag() && tagB == Constant::getEnemyTag3()) {
-		if (contact.getShapeA()->getBody() != NULL && contact.getShapeA()->getBody()->getNode() != NULL) {
-			contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	else if (tagB == Constant::getArrowTag() && tagA >= Constant::getEnemyTag1() && tagA <= Constant::getEnemyTag3()) {
+		auto ABody = contact.getShapeA()->getBody();
+		auto BBody = contact.getShapeB()->getBody();
+		if (BBody != NULL && BBody->getNode() != NULL) {
+			BBody->getNode()->removeFromParentAndCleanup(true);
 		}
-		if (contact.getShapeB()->getBody() != NULL && contact.getShapeB()->getBody()->getNode() != NULL) {
-			Enemy * e = (Enemy *)contact.getShapeB()->getBody()->getNode()->getParent();
-			if (e->getBlood() == 1){
-				Sprite* tmp = e->death((Sprite*)contact.getShapeB()->getBody()->getNode(), e->getMode());
-				this->addChild(tmp);
-				tmp->removeFromParent();
-				contact.getShapeB()->getBody()->getNode()->getParent()->removeFromParentAndCleanup(true);
-			}
-			else
-				e->setBlood(e->getBlood() - 1);
-		}
-	}
-	else if (tagB == Constant::getArrowTag() && tagA == Constant::getEnemyTag3()) {
-		if (contact.getShapeA()->getBody() != NULL && contact.getShapeA()->getBody()->getNode() != NULL) {
-			Enemy * e = (Enemy *)contact.getShapeB()->getBody()->getNode()->getParent();
-			if (e->getBlood() == 1){
-				Sprite* tmp = e->death((Sprite*)contact.getShapeA()->getBody()->getNode(), e->getMode());
+		if (ABody != NULL && ABody->getNode() != NULL) {
+			EnemyController::getInstance()->EnemyAttacked(ABody->getNode()->getParent(), ABody->getNode()->getPosition());
+			/*auto enemySprite = (Sprite*)ABody->getNode();
+			auto enemyNode = (Enemy*)enemySprite->getParent();
+			enemyNode->setBlood(enemyNode->getBlood() - 1);
+			if (enemyNode->getBlood() == 0) {
+			this->addChild(enemyNode->createDispearSprite(enemyNode->getMode()));
 
-				this->addChild(tmp);
-				tmp->removeFromParent();
-				contact.getShapeB()->getBody()->getNode()->getParent()->removeFromParentAndCleanup(true);
-			}
-			else
-				e->setBlood(e->getBlood() - 1);
-		}
-		if (contact.getShapeB()->getBody() != NULL && contact.getShapeB()->getBody()->getNode() != NULL) {
-			contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+			enemySprite->removeFromParentAndCleanup(true);
+			enemyNode->removeFromParentAndCleanup(true);
+			}*/
 		}
 	}
 	else if (tagA == Constant::getArcherTag() && tagB == Constant::getEnemyTag()) {
@@ -226,12 +195,7 @@ bool GamePlayingScene::onContactBegan(PhysicsContact& contact)
 }
 
 void GamePlayingScene::updateTimeToCreateEnemy(float dt) {
-	if (i == 0)
-		this->addChild(EnemyController::createAnEnemy(), 1);
-	i++;
-	/*Enemy* t = new Enemy();
-	t->createEnemy(200, 300, 1, 1);
-	this->addChild(t, 1);*/
+	this->addChild(EnemyController::getInstance(), 1);
 }
 
 void GamePlayingScene::ClickGameEnded(Ref* sender)

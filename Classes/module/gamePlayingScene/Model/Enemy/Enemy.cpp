@@ -1,19 +1,21 @@
 #include "Enemy.h"
 
 
-Enemy::Enemy(){
+bool Enemy::init(){
 	locX = ParameterManager::getVisibleSize().width;
 	locY = ParameterManager::getVisibleSize().height;
 	power = 0;
 	blood = 0;
 	mode = 0;
+
+	return true;
 }
 
 void Enemy::setBlood(int _blood){
 	blood = _blood;
 }
 
-Enemy* Enemy::createEnemy(float _locX, float _locY, int _blood, int _mode){	
+Enemy* Enemy::setParameter(float _locX, float _locY, int _blood, int _mode){
 	locX = _locX;
 	locY = _locY;
 
@@ -23,15 +25,15 @@ Enemy* Enemy::createEnemy(float _locX, float _locY, int _blood, int _mode){
 
 	switch (_mode){
 	case 1:{
-			   createEnemyOne(this);//this 指针是指的是调用CreateEnemy的那个对象
-			   break;
+		createEnemyOne();
+		break;
 	}
 	case 2:{
-			   createEnemyTwo(this);
-			   break;
+		createEnemyTwo();
+		break;
 	}
 	case 3:{
-			   createEnemyArrow(this);
+		createEnemyArrow();
 	}
 	default:
 		
@@ -53,30 +55,29 @@ int Enemy::getMode(){
 	return mode;
 }
 
-void Enemy::createEnemyOne(Enemy*_enemy){
-	_enemy->blood = 1;
-	_enemy->power = 5;
+void Enemy::createEnemyOne(){
+	this->blood = 1;
+	this->power = 5;
 	
 	SpriteFrameCache * cache = SpriteFrameCache::sharedSpriteFrameCache();
 	cache->addSpriteFramesWithFile(Constant::getEnemyGoblinPath());
 
 
     Sprite* aEnemy = Sprite::createWithSpriteFrameName("Goblin_1.png");
-	//Sprite* aEnemy = Sprite::create("image\enemy\Goblin_1.png");
-	Vector <SpriteFrame*> temp = Vector <SpriteFrame*> ::Vector();
+	Vector <SpriteFrame*> temp;
 	char name[20];
-	memset(name, 0, 10);
+	memset(name, 0, sizeof(name));
 	for (int i = 0; i < 5; i++){
 		sprintf(name, "Goblin_%d.png", i + 1);
 		SpriteFrame* sf = cache -> spriteFrameByName(name);
 		temp.pushBack(sf);
 	}
-
 	Animation* animation_run = Animation::createWithSpriteFrames(temp, 0.1f);
+
 	auto Body = PhysicsBody::createBox(aEnemy->getContentSize());
 	aEnemy->setPhysicsBody(Body);
 	Body->setRotationEnable(false);
-	_enemy->addChild(aEnemy, 10);
+	this->addChild(aEnemy, 10);
 	aEnemy->getPhysicsBody()->setContactTestBitmask(0x0000F00F);
 	aEnemy->getPhysicsBody()->setCategoryBitmask(0x0000F00F);
 	//auto animation = AnimationCache::getInstance()->getAnimation(Constant::getEnemyAnimationName());
@@ -85,11 +86,11 @@ void Enemy::createEnemyOne(Enemy*_enemy){
 	Action* ac2 = MoveTo::create(20, Vec2(0, 30));
 	ac2->setTag(2);
 	aEnemy->runAction(ac1);
-	_enemy->runAction(ac2);
+	aEnemy->runAction(ac2);
 	aEnemy->getPhysicsBody()->getFirstShape()->setTag(Constant::getEnemyTag1());
 }
 
-void Enemy::createEnemyTwo(Enemy*_enemy){
+void Enemy::createEnemyTwo(){
 	blood = 2;
 	power = 10;
 	SpriteFrameCache * cache = SpriteFrameCache::sharedSpriteFrameCache();
@@ -98,9 +99,9 @@ void Enemy::createEnemyTwo(Enemy*_enemy){
 
 	Sprite* aEnemy = Sprite::createWithSpriteFrameName("Soldier_1.png");
 	//Sprite* aEnemy = Sprite::create("image\enemy\Goblin_1.png");
-	Vector <SpriteFrame*> temp = Vector <SpriteFrame*> ::Vector();
+	Vector <SpriteFrame*> temp;
 	char name[20];
-	memset(name, 0, 10);
+	memset(name, 0, sizeof(name));
 	for (int i = 0; i < 8; i++){
 		sprintf(name, "Soldier_%d.png", i + 1);
 		SpriteFrame* sf = cache->spriteFrameByName(name);
@@ -111,7 +112,7 @@ void Enemy::createEnemyTwo(Enemy*_enemy){
 	auto Body = PhysicsBody::createBox(aEnemy->getContentSize());
 	aEnemy->setPhysicsBody(Body);
 	Body->setRotationEnable(false);
-	_enemy->addChild(aEnemy, 10);
+	this->addChild(aEnemy, 10);
 	aEnemy->getPhysicsBody()->setContactTestBitmask(0x0000F00F);
 	aEnemy->getPhysicsBody()->setCategoryBitmask(0x0000F00F);
 	//auto animation = AnimationCache::getInstance()->getAnimation(Constant::getEnemyAnimationName());
@@ -120,11 +121,11 @@ void Enemy::createEnemyTwo(Enemy*_enemy){
 	Action* ac2 = MoveTo::create(20, Vec2(0, 30));
 	ac2->setTag(2);
 	aEnemy->runAction(ac1);
-	_enemy->runAction(ac2);
+	this->runAction(ac2);
 	aEnemy->getPhysicsBody()->getFirstShape()->setTag(Constant::getEnemyTag2());
 }
 
-void Enemy::createEnemyArrow(Enemy* _enemy){
+void Enemy::createEnemyArrow(){
 	blood = 2;
 	power = 10;
 	SpriteFrameCache * cache = SpriteFrameCache::sharedSpriteFrameCache();
@@ -133,21 +134,20 @@ void Enemy::createEnemyArrow(Enemy* _enemy){
 
 	Sprite* aEnemy = Sprite::createWithSpriteFrameName("ArrowEnemy_9.png");
 	//Sprite* aEnemy = Sprite::create("image\enemy\Goblin_1.png");
-	Vector <SpriteFrame*> temp = Vector <SpriteFrame*> ::Vector();
+	Vector <SpriteFrame*> temp;
 	char name[20];
-	memset(name, 0, 10);
+	memset(name, 0, sizeof(name));
 	for (int i = 9; i < 16; i++){
 		sprintf(name, "ArrowEnemy_%d.png", i + 1);
 		SpriteFrame* sf = cache->spriteFrameByName(name);
 		temp.pushBack(sf);
 	}
-
 	Animation* animation_run = Animation::createWithSpriteFrames(temp, 0.2f);
 
 	auto Body = PhysicsBody::createBox(aEnemy->getContentSize());
 	aEnemy->setPhysicsBody(Body);
 	Body->setRotationEnable(false);
-	_enemy->addChild(aEnemy, 10);
+	this->addChild(aEnemy, 10);
 	aEnemy->getPhysicsBody()->setContactTestBitmask(0x0000F00F);
 	aEnemy->getPhysicsBody()->setCategoryBitmask(0x0000F00F);
 	//auto animation = AnimationCache::getInstance()->getAnimation(Constant::getEnemyAnimationName());
@@ -156,7 +156,7 @@ void Enemy::createEnemyArrow(Enemy* _enemy){
 	aEnemy->runAction(ac1);
 	//_enemy->runAction(MoveTo::create(10, Vec2(0, 30)));
 	aEnemy->getPhysicsBody()->getFirstShape()->setTag(Constant::getEnemyTag3());
-	_enemy->setContentSize(aEnemy->getContentSize());
+	this->setContentSize(aEnemy->getContentSize());
 	//设置弓箭
 	this->schedule(schedule_selector(Enemy::updateTimeToArrowAttack), 1.0f);
 }
@@ -183,70 +183,53 @@ void Enemy::updateTimeToArrowAttack(float dt){
 	EnemyArrow->getPhysicsBody()->setCategoryBitmask(0x0000F0F0);
 }
 
-Sprite* Enemy::death(Sprite* s, int _mode){
+Sprite* Enemy::createDispearSprite(int _mode,Vec2 position){
 	Sprite* tempS = Sprite::create();
-	tempS->setPosition(s->getPosition()+this->getPosition());
+	SpriteFrameCache * cache = SpriteFrameCache::sharedSpriteFrameCache();
+	char name[20];
+	memset(name, 0, sizeof(name));
+	Vector <SpriteFrame*> temp;
 	switch (_mode)
 	{
 	case 1:{
-			   tempS ->createWithSpriteFrameName("Goblin_1.png");
-			   Action* ac1 = Director::getInstance()->getActionManager()->getActionByTag(1, s);
-			   Action* ac2 = Director::getInstance()->getActionManager()->getActionByTag(2, this);
-			   s->stopAction(ac1);
-			   s->stopAction(ac2);
-			   SpriteFrameCache * cache = SpriteFrameCache::sharedSpriteFrameCache();
-			   Vector <SpriteFrame*> temp = Vector <SpriteFrame*> ::Vector();
-			   char name[20];
-			   memset(name, 0, 10);
-			   for (int i = 10; i < 14; i++){
-				   sprintf(name, "Goblin_%d.png", i + 1);
-				   SpriteFrame* sf = cache->spriteFrameByName(name);
-				   temp.pushBack(sf);
-			   }
+		//tempS ->createWithSpriteFrameName("Goblin_1.png");
+		for (int i = 10; i < 14; i++){
+			sprintf(name, "Goblin_%d.png", i + 1);
+			SpriteFrame* sf = cache->getSpriteFrameByName(name);
+			temp.pushBack(sf);
+		}
 
-			   Animation* animation_run = Animation::createWithSpriteFrames(temp, 0.5f);
-			   tempS->runAction(Animate::create(animation_run));
-			   tempS->setPosition(this->getPosition());
-			   break;
+		Animation* animation_run = Animation::createWithSpriteFrames(temp, 0.5f);
+		tempS->runAction(Animate::create(animation_run));
+		tempS->setPosition(position);
+		break;
 	}
 	case 2:{
-			   tempS->createWithSpriteFrameName("Soldier_1.png");
-			   Action* ac1 = Director::getInstance()->getActionManager()-> getActionByTag(1, s);
-			   Action* ac2 = Director::getInstance()->getActionManager()->getActionByTag(2, this);
-			   s->stopAction(ac1);
-			   s->stopAction(ac2);
-			   SpriteFrameCache * cache = SpriteFrameCache::sharedSpriteFrameCache();
-			   Vector <SpriteFrame*> temp = Vector <SpriteFrame*> ::Vector();
-			   char name[20];
-			   memset(name, 0, 10);
-			   for (int i = 18; i < 23; i++){
-				   sprintf(name, "Soldier_%d.png", i + 1);
-				   SpriteFrame* sf = cache->spriteFrameByName(name);
-				   temp.pushBack(sf);
-			   }
+		//tempS->createWithSpriteFrameName("Soldier_1.png");
+		for (int i = 18; i < 23; i++){
+			sprintf(name, "Soldier_%d.png", i + 1);
+			SpriteFrame* sf = cache->getSpriteFrameByName(name);
+			temp.pushBack(sf);
+		}
 
-			   Animation* animation_run = Animation::createWithSpriteFrames(temp, 0.5f);
-			   tempS->runAction(Animate::create(animation_run));
-			  // this->addChild(s);
-			   break;
+		Animation* animation_run = Animation::createWithSpriteFrames(temp, 0.5f);
+		tempS->runAction(Repeat::create(Animate::create(animation_run),1));
+		tempS->setPosition(position);
+		// this->addChild(s);
+		break;
 	}
 	case 3:{
-			   tempS->createWithSpriteFrameName("ArrowEnemy_1.png");
-			   Action* ac1 = Director::getInstance()->getActionManager()->getActionByTag(1, s);
-			   s->stopAction(ac1);
-			   SpriteFrameCache * cache = SpriteFrameCache::sharedSpriteFrameCache();
-			   Vector <SpriteFrame*> temp = Vector <SpriteFrame*> ::Vector();
-			   char name[20];
-			   memset(name, 0, 10);
-			   for (int i = 18; i < 22; i++){
-				   sprintf(name, "ArrowEnemy_%d.png", i + 1);
-				   SpriteFrame* sf = cache->spriteFrameByName(name);
-				   temp.pushBack(sf);
-			   }
+		//tempS->createWithSpriteFrameName("ArrowEnemy_1.png");
+		for (int i = 18; i < 22; i++){
+			sprintf(name, "ArrowEnemy_%d.png", i + 1);
+			SpriteFrame* sf = cache->getSpriteFrameByName(name);
+			temp.pushBack(sf);
+		}
 
-			   Animation* animation_run = Animation::createWithSpriteFrames(temp, 0.5f);
-			   s->runAction(RepeatForever::create(Animate::create(animation_run)));
-			   break;
+		Animation* animation_run = Animation::createWithSpriteFrames(temp, 0.5f);
+		tempS->runAction(RepeatForever::create(Animate::create(animation_run)));
+		tempS->setPosition(position);
+		break;
 	}
 	default:
 		break;

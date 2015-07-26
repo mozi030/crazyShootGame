@@ -4,7 +4,7 @@ float ParameterManager::arrowMaxVelocity = 600;
 float ParameterManager::enemyMovingTime = 60;
 Vec2 ParameterManager::gravity = Vec2(0, -100);
 
-Size ParameterManager::visibleSize = Size(1000,650);
+Size ParameterManager::visibleSize = Size(1024,640);
 
 float ParameterManager::getArrowMaxVelocity() {
 	return arrowMaxVelocity;

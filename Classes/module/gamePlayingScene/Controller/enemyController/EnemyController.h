@@ -1,10 +1,14 @@
 #include "cocos2d.h"
 
-class EnemyController :public cocos2d::Sprite {
+class EnemyController :public cocos2d::Layer {
 public:
-	EnemyController();
-	static EnemyController* createAnEnemy();
+	static EnemyController*getInstance();
+	virtual bool init();
+	CREATE_FUNC(EnemyController);
+
+	void EnemyAttacked(cocos2d::Node*, cocos2d::Vec2);
 private:
-	EnemyController* enemy;
-	//Point block;	
+	EnemyController();
+	~EnemyController();
+	static EnemyController*enemyController;
 };

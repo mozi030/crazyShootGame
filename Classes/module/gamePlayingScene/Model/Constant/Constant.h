@@ -14,6 +14,12 @@ public:
 	static string getEnemyGoblinPath();
 	static string getEnemyArrowEnemyPath();
 
+	static string getArcherbodyPath();
+	static string getArcherhandPath();
+	static string getArcherheadPath();
+	static string getplayerarrowFrameName();
+	static string getplayerarrowPath();
+
 	static string getArcherFrameName();
 	static string getEnemyFrameName();
 	static string getEnemyAnimationName();
@@ -27,6 +33,11 @@ public:
 	static int getEnemyTag3();
 
 	static float getTimeLimit();
+
+
+	static int getArcherheadTag();
+
+	static int getArcherhandTag();
 
 private:
 	static Constant* constant;
@@ -55,4 +66,13 @@ private:
 	static int enemyTag3;
 
 	static float timeLimit;
+
+
+	static string archerheadPath;
+	static string archerhandPath;
+	static string archerbodyPath;
+	static string playerarrowPath;
+	static string playerarrowFrameName;
+	static int archerhandTag;
+	static int archerheadTag;
 };

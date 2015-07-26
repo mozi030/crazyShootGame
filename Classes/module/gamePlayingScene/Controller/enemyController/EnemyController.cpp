@@ -1,48 +1,41 @@
 #include"EnemyController.h"
 USING_NS_CC;
-/*#include"../../../../public/parameterManager/ParameterManager.h"
-#include"../../Model/Constant/Constant.h"*/
 #include "../../Model/Enemy/Enemy.h"
 
-EnemyController::EnemyController(){
+EnemyController*EnemyController::enemyController = NULL;
 
-	
+EnemyController::EnemyController(){}
+
+EnemyController::~EnemyController(){
+	enemyController = NULL;
 }
 
-EnemyController* EnemyController::createAnEnemy() {
+void EnemyController::EnemyAttacked(cocos2d::Node* enemyNode, Vec2 position) {
+	auto enemy = (Enemy*)enemyNode;
+	enemy->setBlood(enemy->getBlood() - 1);
+	if (enemy->getBlood() == 0) {
+		this->addChild(enemy->createDispearSprite(enemy->getMode(), position), 1);
 
-	auto  s = new  EnemyController();
-	/*Size visibleSize = ParameterManager::getVisibleSize();
-	//int x = rand() % (int(visibleSize.width) - 100) + 100;
-	//int y = rand() % (int(visibleSize.height) - 100) + 100;
-	int x = 300;
-	int y = 200;
-	//auto aSprite = (EnemyController*)Sprite::createWithSpriteFrameName(Constant::getEnemyFrameName());
+		//enemySprite->removeFromParentAndCleanup(true);
+		enemy->removeFromParentAndCleanup(true);
+	}
+}
 
-	auto aSprite = new EnemyController();
-	aSprite->initWithSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName(Constant::getEnemyFrameName()));
-	aSprite->autorelease();
+EnemyController* EnemyController::getInstance() {
+	if (enemyController == NULL) {
+		enemyController = EnemyController::create();
+	}
+	return enemyController;
+}
 
-	auto aBody = PhysicsBody::createCircle(aSprite->getContentSize().width / 2);
-	aBody->setRotationEnable(false);
-	aSprite->setPhysicsBody(aBody);
-	aSprite->setPosition(x, y);
-	aSprite->setAnchorPoint(Vec2(0, 0));
-	aSprite->getPhysicsBody()->setContactTestBitmask(0x0000F00F);
-	aSprite->getPhysicsBody()->setCategoryBitmask(0x0000F00F);
-	auto animation = AnimationCache::getInstance()->getAnimation(Constant::getEnemyAnimationName());
-	aSprite->runAction(RepeatForever::create(Animate::create(animation)));
-	aSprite->runAction(MoveTo::create(ParameterManager::getEnemyMovingTime() * x / visibleSize.width, Vec2(0,30)));
-	aSprite->getPhysicsBody()->getFirstShape()->setTag(Constant::getEnemyTag());
+bool EnemyController::init() {
 
+	auto t = Enemy::create();
+	auto i = Enemy::create();
+	i->setParameter(1000, 200,1, 1);
+	t->setParameter(500, 200, 2, 2);
+	this->addChild(t);
+	this->addChild(i);
 
-	return aSprite;*/
-	auto t = new Enemy();
-	auto i = new Enemy();
-	i->createEnemy(1000, 200, 1, 1);
-	t->createEnemy(500, 200, 2,2);
-	s->addChild(t);
-	s->addChild(i);
-
-	return s;
+	return true;
 }

@@ -16,9 +16,8 @@ public:
 	bool onContactBegan(PhysicsContact& contact);
 
 	void ClickGameEnded(Ref* sender);
-
+	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event*event);
 private:
-	int i = 0;
 	Sprite* backgroundSprite;
 	float totalTime;
 };
