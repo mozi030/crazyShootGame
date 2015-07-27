@@ -7,5 +7,6 @@ public:
 
 private:
 	SetGameCacheController();
+	~SetGameCacheController();
 	static SetGameCacheController* gameCacheController;
 };

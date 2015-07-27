@@ -1,5 +1,7 @@
+#include"../../../../public/parameterManager/ParameterManager.h"
+#include"../../../../public/Constant/Constant.h"
 #include "Enemy.h"
-
+#include "../archer/archer.h"
 
 bool Enemy::init(){
 	locX = ParameterManager::getVisibleSize().width;
@@ -17,7 +19,7 @@ void Enemy::setBlood(int _blood){
 
 Enemy* Enemy::setParameter(float _locX, float _locY, int _blood, int _mode){
 	locX = _locX;
-	locY = _locY;
+	locY = _locY; 
 
 	blood = _blood;
 	mode = _mode;
@@ -56,12 +58,8 @@ int Enemy::getMode(){
 }
 
 void Enemy::createEnemyOne(){
-	this->blood = 1;
-	this->power = 5;
-	
 	SpriteFrameCache * cache = SpriteFrameCache::sharedSpriteFrameCache();
 	cache->addSpriteFramesWithFile(Constant::getEnemyGoblinPath());
-
 
     Sprite* aEnemy = Sprite::createWithSpriteFrameName("Goblin_1.png");
 	Vector <SpriteFrame*> temp;
@@ -83,7 +81,7 @@ void Enemy::createEnemyOne(){
 	//auto animation = AnimationCache::getInstance()->getAnimation(Constant::getEnemyAnimationName());
 	Action* ac1 = RepeatForever::create(Animate::create(animation_run));
 	ac1->setTag(1);
-	Action* ac2 = MoveTo::create(20, Vec2(0, 30));
+	Action* ac2 = RepeatForever::create(MoveBy::create(1, Vec2(-30, 0)));
 	ac2->setTag(2);
 	aEnemy->runAction(ac1);
 	aEnemy->runAction(ac2);
@@ -91,8 +89,6 @@ void Enemy::createEnemyOne(){
 }
 
 void Enemy::createEnemyTwo(){
-	blood = 2;
-	power = 10;
 	SpriteFrameCache * cache = SpriteFrameCache::sharedSpriteFrameCache();
 	cache->addSpriteFramesWithFile(Constant::getEnemySoldierPath());
 
@@ -118,16 +114,16 @@ void Enemy::createEnemyTwo(){
 	//auto animation = AnimationCache::getInstance()->getAnimation(Constant::getEnemyAnimationName());
 	Action* ac1 = RepeatForever::create(Animate::create(animation_run));
 	ac1->setTag(1);
-	Action* ac2 = MoveTo::create(20, Vec2(0, 30));
+	Action* ac2 = RepeatForever::create(MoveBy::create(1, Vec2(-30, 0)));
 	ac2->setTag(2);
 	aEnemy->runAction(ac1);
 	this->runAction(ac2);
 	aEnemy->getPhysicsBody()->getFirstShape()->setTag(Constant::getEnemyTag2());
 }
 
+Vec2 position;
+
 void Enemy::createEnemyArrow(){
-	blood = 2;
-	power = 10;
 	SpriteFrameCache * cache = SpriteFrameCache::sharedSpriteFrameCache();
 	cache->addSpriteFramesWithFile(Constant::getEnemyArrowEnemyPath());
 
@@ -147,6 +143,7 @@ void Enemy::createEnemyArrow(){
 	auto Body = PhysicsBody::createBox(aEnemy->getContentSize());
 	aEnemy->setPhysicsBody(Body);
 	Body->setRotationEnable(false);
+	Body->setTag(Constant::getEnemyArrowTag());
 	this->addChild(aEnemy, 10);
 	aEnemy->getPhysicsBody()->setContactTestBitmask(0x0000F00F);
 	aEnemy->getPhysicsBody()->setCategoryBitmask(0x0000F00F);
@@ -156,31 +153,31 @@ void Enemy::createEnemyArrow(){
 	aEnemy->runAction(ac1);
 	//_enemy->runAction(MoveTo::create(10, Vec2(0, 30)));
 	aEnemy->getPhysicsBody()->getFirstShape()->setTag(Constant::getEnemyTag3());
-	this->setContentSize(aEnemy->getContentSize());
+	//this->setContentSize(aEnemy->getContentSize());
+	position = aEnemy->getPosition();
 	//ÉèÖÃ¹­¼ý
-	this->schedule(schedule_selector(Enemy::updateTimeToArrowAttack), 1.0f);
+	aEnemy->schedule(schedule_selector(Enemy::updateTimeToArrowAttack), 1.6f);
 }
 
 void Enemy::updateTimeToArrowAttack(float dt){
 
-	Sprite* EnemyArrow = Sprite::create("image/EnemyArrow.png");
+	Sprite* EnemyArrow = Sprite::create(Constant::getEnemyArrowPath());
 	this->addChild(EnemyArrow);
 	auto ArrowBody = PhysicsBody::createBox(EnemyArrow->getContentSize());
 	EnemyArrow->setPhysicsBody(ArrowBody);
 
-	//EnemyArrow->setPosition(0, 100);
+	EnemyArrow->setPosition(position.x, position.y + 100);
 	float angle = atan((locY - 0) / (locX - 0)) / pi * 180;
 	EnemyArrow->setRotation(angle);
 
-	float a = ParameterManager::getArrowMaxVelocity();
-	float arrowVelocityX = -(EnemyArrow ->getPositionX()+this->getPositionX())/ dt;
-	float arrowVelocityY = (EnemyArrow ->getPositionY()+this->getPositionY() - 0.5*dt*dt*ParameterManager::getGravity().y)/dt;
+	float arrowVelocityX = -fabs(EnemyArrow->getPositionX() - archer::getInstance()->getPositionX()) / 1.0;
+	float arrowVelocityY = (-fabs(EnemyArrow->getPositionY() - archer::getInstance()->getPositionY()) - 0.5 * 1.0 * 1.0 * ParameterManager::getGravity().y) / 1.0;
 	//float arrowVelocityX = ParameterManager::getArrowMaxVelocity() * cos((angle + 180) / 180 * pi) + 10;
 	//float arrowVelocityY = ParameterManager::getArrowMaxVelocity() * sin(angle / 180 * pi) + 10;
 	ArrowBody->setVelocity(Vec2(arrowVelocityX, arrowVelocityY));
 
-	EnemyArrow->getPhysicsBody()->setContactTestBitmask(0x0000F0F0);
-	EnemyArrow->getPhysicsBody()->setCategoryBitmask(0x0000F0F0);
+	EnemyArrow->getPhysicsBody()->setContactTestBitmask(0x00000000);
+	EnemyArrow->getPhysicsBody()->setCategoryBitmask(0x00000000);
 }
 
 Sprite* Enemy::createDispearSprite(int _mode,Vec2 position){

@@ -1,35 +1,27 @@
 #include"GroundController.h"
 USING_NS_CC;
 #include"../../../../public/parameterManager/ParameterManager.h"
-#include"../../Model/Constant/Constant.h"
+#include"../../../../public/Constant/Constant.h"
+#include"../../Model/ground/ground.h"
 
-GroundController* GroundController::groundController = nullptr;
+GroundController* GroundController::groundController = NULL;
 
 GroundController::GroundController() {}
 
 GroundController::~GroundController() {
-	groundController = nullptr;
+	groundController = NULL;
 }
 
 GroundController* GroundController::getInstance() {
-	//auto poolManager = PoolManager::getInstance();
-	//if (!poolManager->getCurrentPool()->isClearing() || !poolManager->isObjectInPools(groundController)) {
-//	if (groundController == nullptr){
-		groundController = new GroundController();
-		groundController->init();
-		groundController->autorelease();
-		//groundController = (GroundController*)Node::create();
-		groundController->initial();
-//	}
+	if (groundController == NULL) {
+		groundController = GroundController::create();
+	}
 	return groundController;
 }
 
-void GroundController::initial() {
-	Size visibleSize = ParameterManager::getVisibleSize();
-	groundController->setPhysicsBody(PhysicsBody::createEdgeSegment(Vec2(0, 75), Vec2(visibleSize.width, 75)));
+bool GroundController::init() {
+	if (!Node::init()) { return false; }
+	this->addChild(ground::createBottomGround());
 
-	groundController->getPhysicsBody()->setDynamic(false);
-	groundController->getPhysicsBody()->getFirstShape()->setTag(Constant::getGroundTag());
-	groundController->getPhysicsBody()->setContactTestBitmask(0x00000FF0);
-	groundController->getPhysicsBody()->setCategoryBitmask(0x00000FF0);
+	return true;
 }

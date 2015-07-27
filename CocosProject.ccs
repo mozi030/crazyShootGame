@@ -1,0 +1,39 @@
+<Solution>
+  <PropertyGroup Name="CocosProject" Version="2.3.1.1" Type="CocosStudio" />
+  <SolutionFolder>
+    <Group ctype="ResourceGroup">
+      <RootFolder Name=".">
+        <Folder Name="BackgroundStoryScene">
+          <Folder Name="BackgroundStorySceneCsd">
+            <Project Name="BackgroundStorySceneCsd.csd" Type="Layer" />
+            <Image Name="before.png" />
+            <Image Name="next.png" />
+            <Image Name="skip.png" />
+            <Image Name="story (1).png" />
+            <Image Name="story (2).png" />
+            <Image Name="story (3).png" />
+            <Image Name="story (4).png" />
+            <Image Name="story (5).png" />
+            <Project Name="StoryScene.csd" Type="Scene" />
+          </Folder>
+        </Folder>
+        <Folder Name="GamePlayingScene">
+          <Folder Name="Level1MapCsd">
+            <TmxFile Name="map1.tmx" />
+            <Image Name="bg1.jpg" />
+            <Project Name="Level1Map.csd" Type="Scene" />
+          </Folder>
+        </Folder>
+        <Folder Name="HelloWorldScene">
+          <Folder Name="HelloWorldSceneCsd">
+            <Image Name="ABOUT.png" />
+            <Image Name="control.png" />
+            <Project Name="HelloWorldScene.csd" Type="Scene" />
+            <Image Name="record.png" />
+            <Image Name="startBg.png" />
+          </Folder>
+        </Folder>
+      </RootFolder>
+    </Group>
+  </SolutionFolder>
+</Solution>

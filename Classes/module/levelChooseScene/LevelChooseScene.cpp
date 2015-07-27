@@ -1,5 +1,6 @@
 #include"LevelChooseScene.h"
 #include"../gamePlayingScene/GamePlayingScene.h"
+#include"../../public/Constant/Constant.h"
 USING_NS_CC;
 #pragma execution_character_set("utf-8")
 
@@ -7,12 +8,12 @@ bool LevelChooseScene::init() {
 	if (!Scene::init()){
 		return  false;
 	}
-	auto bg = Sprite::create("LevelChoose/bg.png");
-	bg->setPosition(512, 320);
+	auto bg = Sprite::create(Constant::getLevelChosenSceneBackgroundPath());
+	bg->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+	bg->setPosition(0, 0);
 	this->addChild(bg);
 
-//	MenuItemFont *levelChosenMenuItem = MenuItemFont::create("LevelChosen", CC_CALLBACK_1(LevelChooseScene::LevelChosenMenuItemCallback,this));
-	auto levelChosenMenuItem= MenuItemImage::create("LevelChoose/choose_btn_1.png", "LevelChoose/choose_btn_1.png", CC_CALLBACK_1(LevelChooseScene::LevelChosenMenuItemCallback,this));
+	auto levelChosenMenuItem = MenuItemImage::create(Constant::getLevelChosenButton1Path(), Constant::getLevelChosenButton1Path(), CC_CALLBACK_1(LevelChooseScene::LevelChosenMenuItemCallback, this));
 	levelChosenMenuItem->setAnchorPoint(Vec2(0, 0));
 	levelChosenMenuItem->setPosition(Vec2(500, 300));
 	Menu *levelChosenMenu = Menu::create(levelChosenMenuItem, NULL);

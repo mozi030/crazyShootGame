@@ -7,12 +7,10 @@ public:
 	void initial();
 	static GamePlayingScene* createScene();
 
-	void setGameParameter();
 	//void initial();
 	bool onTouchBegan(Touch *touch, Event *unused_event);
 	void onTouchEnded(Touch *touch, Event *unused_event);
 	void updateTimeForProgressBar(float dt);
-	void updateTimeToCreateEnemy(float dt);
 	bool onContactBegan(PhysicsContact& contact);
 
 	void ClickGameEnded(Ref* sender);

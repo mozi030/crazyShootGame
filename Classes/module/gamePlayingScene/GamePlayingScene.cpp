@@ -1,17 +1,15 @@
 ﻿#include"GamePlayingScene.h"
+#include "cocostudio/CocoStudio.h"
+#include "ui/CocosGUI.h"
+#include"../levelChooseScene/LevelChooseScene.h"
 #include"../../public/parameterManager/ParameterManager.h"
+#include"../../public/Constant/Constant.h"
 #include"Controller/setGameCacheController/SetGameCacheController.h"
 #include"Controller/archerController/archerController.h"
-#include"Model/Constant/Constant.h"
 #include"Controller/progressTimeController/ProgressTimeController.h"
 #include"Controller\groundController\GroundController.h"
 #include"Controller\enemyController\EnemyController.h"
 #include"Controller\arrowController\ArrowController.h"
-#include"../levelChooseScene/LevelChooseScene.h"
-#include "cocostudio/CocoStudio.h"
-
-#include"Model/archer/archer.h"
-#include "ui/CocosGUI.h"
 
 #define pi 3.141592654
 
@@ -25,18 +23,15 @@ GamePlayingScene* GamePlayingScene::createScene(){
 
 void GamePlayingScene::initial() {
 	this->getPhysicsWorld()->setGravity(ParameterManager::getGravity());
-//this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+	this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+
 	SetGameCacheController::getInstance()->setGameCache();
 
-//	backgroundSprite = Sprite::create(Constant::getBackgroundPath());
-//	backgroundSprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-//	backgroundSprite->setPosition(0, 0);
-//	this->addChild(backgroundSprite, 0);
-	auto map = CSLoader::createNode("GameScene/GameScene.csb");
-	addChild(map);
+	auto map = CSLoader::createNode(Constant::getLevel1MapCsdPath());
+	this->addChild(map,0);
 
 	//加入弓箭手
-	this->addChild(archer::getInstance(),1);
+	this->addChild(ArcherController::getInstance(),1);
 	
 	//进度条
 	this->addChild(ProgressTimeController::getInstance(), 1);
@@ -45,8 +40,8 @@ void GamePlayingScene::initial() {
 	this->addChild(GroundController::getInstance(),1);
 
 	//产生敌人
-	//this->schedule(schedule_selector(GamePlayingScene::updateTimeToCreateEnemy), 3.0f);
 	this->addChild(EnemyController::getInstance(),1);
+
 	//物理世界监听
 	auto listener = EventListenerPhysicsContact::create();
 	listener->onContactBegin = CC_CALLBACK_1(GamePlayingScene::onContactBegan, this);
@@ -62,15 +57,16 @@ void GamePlayingScene::initial() {
 	auto menu = Menu::create();
 	menu->setPosition(Vec2::ZERO);
 	menu->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-	this->addChild(menu);
+	this->addChild(menu,1);
 
 	Size visibleSize = ParameterManager::getVisibleSize();
-	auto gameEndedItem = MenuItemImage::create("image/menuGameEnded.png", "image/menuGameEnded.png", CC_CALLBACK_1(GamePlayingScene::ClickGameEnded, this));
+	auto gameEndedItem = MenuItemImage::create(Constant::getGameEndedPath(), Constant::getGameEndedPath(), CC_CALLBACK_1(GamePlayingScene::ClickGameEnded, this));
 	gameEndedItem->setPosition(visibleSize.width, visibleSize.height);
 	gameEndedItem->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
 	menu->addChild(gameEndedItem);
-auto keyboardListener = EventListenerKeyboard::create();
-	keyboardListener->onKeyPressed = CC_CALLBACK_2(GamePlayingScene::onKeyPressed,this);
+
+	auto keyboardListener = EventListenerKeyboard::create();
+	keyboardListener->onKeyPressed = CC_CALLBACK_2(GamePlayingScene::onKeyPressed,this); 
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener,this);
 }
 
@@ -82,15 +78,11 @@ void GamePlayingScene::onKeyPressed(EventKeyboard::KeyCode keycode, Event*event)
 
 	}
 	else if (EventKeyboard::KeyCode::KEY_LEFT_ARROW == keycode) {
-		archer::getInstance()->runAction(MoveBy::create(1,Vec2(-20,0)));
+		ArcherController::getInstance()->getArcher()->runAction(MoveBy::create(1,Vec2(-20,0)));
 	}
 	else if (EventKeyboard::KeyCode::KEY_RIGHT_ARROW == keycode) {
-		archer::getInstance()->runAction(MoveBy::create(1, Vec2(20, 0)));
+		ArcherController::getInstance()->getArcher()->runAction(MoveBy::create(1, Vec2(20, 0)));
 	}
-}
-void GamePlayingScene::setGameParameter() {
-	this->getPhysicsWorld()->setGravity(ParameterManager::getGravity());
-	//this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 }
 
 float xBegin, yBegin, xEnd, yEnd;
@@ -104,11 +96,12 @@ void GamePlayingScene::onTouchEnded(Touch *touch, Event *unused_event){
 	this->unschedule(schedule_selector(GamePlayingScene::updateTimeForProgressBar));
 
 	Vec2 touchEndedPosition = touch->getLocation();
-	xBegin = (float)archer::getInstance()->getPositionX() + 20.0;
-	yBegin = (float)archer::getInstance()->getPositionY() + 20.0;
+	Vec2 beginPosition = ArcherController::getInstance()->getArcher()->getPosition();
+	xBegin = beginPosition.x + 20.0;
+	yBegin = beginPosition.y + 20.0;
 	xEnd = touchEndedPosition.x;
 	yEnd = touchEndedPosition.y;
-	//´´½¨¹­¼ý
+
 	this->addChild(ArrowController::createAnArrow(xBegin, yBegin, xEnd, yEnd), 3);
 }
 
@@ -133,17 +126,18 @@ bool GamePlayingScene::onContactBegan(PhysicsContact& contact)
 	Size visibleSize = ParameterManager::getVisibleSize();
 	int tagA = contact.getShapeA()->getTag();
 	int tagB = contact.getShapeB()->getTag();
-	if (tagA == Constant::getGroundTag() && tagB == Constant::getArrowTag()) {
+	//箭射到地
+	if (tagA == Constant::getBottomGroundTag() && tagB == Constant::getArrowTag()) {
 		if (contact.getShapeB()->getBody() != NULL && contact.getShapeB()->getBody()->getNode() != NULL) {
 			contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
 		}
 	}
-	else if (tagB == Constant::getGroundTag() && tagA == Constant::getArrowTag()) {
+	else if (tagB == Constant::getBottomGroundTag() && tagA == Constant::getArrowTag()) {
 		if (contact.getShapeA()->getBody() != NULL && contact.getShapeA()->getBody()->getNode() != NULL) {
 			contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
 		}
 	}
-	//¼ýÉäµ½µÐÈË
+	//箭射到敌人
 	else if (tagA == Constant::getArrowTag() && tagB >= Constant::getEnemyTag1() && tagB <= Constant::getEnemyTag3()) {
 		auto ABody = contact.getShapeA()->getBody();
 		auto BBody = contact.getShapeB()->getBody();
@@ -182,11 +176,12 @@ bool GamePlayingScene::onContactBegan(PhysicsContact& contact)
 			}*/
 		}
 	}
-	else if (tagA == Constant::getArcherTag() && tagB == Constant::getEnemyTag()) {
+	//敌人碰到射手
+	else if (tagA == Constant::getArcherTag() && tagB >= Constant::getEnemyTag1() && tagB <= Constant::getEnemyTag3()) {
 		//gameover
 		;
 	}
-	else if (tagB == Constant::getArcherTag() && tagA == Constant::getEnemyTag()) {
+	else if (tagB == Constant::getArcherTag() && tagA >= Constant::getEnemyTag1() && tagA <= Constant::getEnemyTag3()) {
 		//gameover
 		;
 	}
@@ -194,28 +189,13 @@ bool GamePlayingScene::onContactBegan(PhysicsContact& contact)
 	return true;
 }
 
-void GamePlayingScene::updateTimeToCreateEnemy(float dt) {
-	this->addChild(EnemyController::getInstance(), 1);
-}
-
 void GamePlayingScene::ClickGameEnded(Ref* sender)
 {
-	//this->unscheduleAllCallbacks();
-	//this->unscheduleAllSelectors();
-	//this->stopAllActions();
-	
-	//delete SetGameCacheController::getInstance();
-	SetGameCacheController::deleteInstance();
-	//archerController::getInstance()->removeFromParentAndCleanup(true);
-	//GroundController::getInstance()->removeFromParentAndCleanup(true);
-	//ProgressTimeController::getInstance()->removeFromParentAndCleanup(true);
-
-	//this->removeFromPhysicsWorld();
-	//this->removeFromParentAndCleanup(true);
-
 	auto aScene = LevelChooseScene::create();
 	Director::sharedDirector()->setDepthTest(true);
 	TransitionScene *transition = TransitionPageTurn::create(0.5f, aScene, false);
 	Director::getInstance()->replaceScene(transition);
+
+	ParameterManager::deleteAll();
 }
 

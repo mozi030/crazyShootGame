@@ -1,33 +1,28 @@
 #include"archer.h"
-#include"../../Model/Constant/Constant.h"
+#include"../../../../public/Constant/Constant.h"
+#include"../../../../public/ParameterManager/ParameterManager.h"
+
 archer* archer::archer_ = NULL;
 
 archer::archer() {}
 
 archer::~archer() {
-	archer_ = NULL;
-}
-
-/**
-archer* archerController::getInstance(){
-	//auto poolManager = PoolManager::getInstance();
-	//if (!poolManager->getCurrentPool()->isClearing() || !poolManager->isObjectInPools(archer)) {
-	if (archer == NULL){
-		archer = new archerController();
-
-		archer->autorelease();
-		//archer = (archerController*)Sprite::createWithSpriteFrameName(Constant::getArcherFrameName());
-		archer->init();
+	if (archer_ != NULL) {
+		archer_ = NULL;
 	}
-	return archer;
 }
-*/
+
+archer* archer::getInstance() {
+	if (archer_ == NULL) {
+		archer_ = archer::create();
+	}
+	return archer_;
+}
 
 bool archer::init(){
-	bool a = Layer::init();
+	if (!Sprite::init()) { return false; }
 
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	Size visibleSize = ParameterManager::getVisibleSize();
 	float times = 1.5;//图形放大倍数
 
 	body = Sprite::create(Constant::getArcherbodyPath());
@@ -65,11 +60,11 @@ bool archer::init(){
 	//head->getPhysicsBody()->setCollisionBitmask(0x0000000F);
    
 	//血条
-	hpBar_back = Sprite::create("image/GamePlayingScene/xue_back.png");
+	hpBar_back = Sprite::create(Constant::getBloodBackPath());
 	hpBar_back->setPosition(Vec2(body->getContentSize().width / 2, body->getContentSize().height + 30));
 	body->addChild(hpBar_back);
 
-	hpBar = ProgressTimer::create(Sprite::create("image/GamePlayingScene/xue_fore.png"));
+	hpBar = ProgressTimer::create(Sprite::create(Constant::getBloodForePath()));
 	hpBar->setType(ProgressTimer::Type::BAR); // 设置进度条样式（条形或环形）
 	hpBar->setMidpoint(Vec2(0, 0.5f));        // 设置进度条的起始点，（0，y）表示最左边，（1，y）表示最右边，（x，1）表示最上面，（x，0）表示最下面。
 	hpBar->setBarChangeRate(Vec2(1, 0));      // 设置进度条变化方向，（1,0）表示横方向，（0,1）表示纵方向。
@@ -77,26 +72,6 @@ bool archer::init(){
 	hpBar->setPosition(Vec2(hpBar_back->getContentSize().width / 2, hpBar_back->getContentSize().height / 2));
 	hpBar_back->addChild(hpBar);
 	hpBar_back->setVisible(true);   // 设置整个血条可见，我们将在Player 遭受攻击的时候再显示血条。
-
-
-
-	/*
-	hpBar_back = Sprite::create("image/xue_back.png");
-	hpBar_back->setPosition(head->getPositionX(), head->getPositionY()+20);
-	this->addChild(hpBar_back, 2);
-
-	hpBar_fore = Sprite::create("image/xue_fore.png");
-	hpBar = ProgressTimer::create(hpBar_fore);
-	hpBar->setPosition(head->getPositionX(), head->getPositionY()+20);
-	hpBar->setType(ProgressTimer::Type::BAR);
-	hpBar->setMidpoint(Point(0, 0));
-	hpBar->setBarChangeRate(Point(1, 0));
-	this->addChild(hpBar, 1);
-
-	this->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-	this->setPosition(0, 0);
-
-	*/
 	
 	//add touch listener
 	EventListenerTouchOneByOne* screenListener = EventListenerTouchOneByOne::create();
@@ -112,8 +87,7 @@ bool archer::init(){
 
 	//整体
 	
-	this->setPosition(visibleSize.width / 10, 200);
-	auto bodyBody = PhysicsBody::createBox(Size(body->getContentSize().width * 0.8,body->getContentSize().height));
+	auto bodyBody = PhysicsBody::createBox(Size(body->getContentSize().width * 0.8,body->getContentSize().height * 1.2));
 	bodyBody->getFirstShape()->setTag(Constant::getArcherTag());
 	this->setPhysicsBody(bodyBody);
 
@@ -123,11 +97,11 @@ bool archer::init(){
 	//arrowSprite->getPhysicsBody()->setContactTestBitmask(0x0000F0F0);
 	//arrowSprite->getPhysicsBody()->setCategoryBitmask(0x0000F0F0);
 	
-	return a;
+	return true;
 }
 
 bool archer::onTouchBegan(Touch *touch, Event *unused_event) {
-	archerCenter = this->getPosition();
+	auto archerCenter = this->getPosition();
 	auto touchPoint = touch->getLocation();
 	if (touchPoint.x >= archerCenter.x) {
 		body->setFlippedX(false);//不翻转
@@ -159,33 +133,3 @@ bool archer::onTouchBegan(Touch *touch, Event *unused_event) {
 	}
 	return true;
 }
-
-/*
-archerController* archerController::getInstance(){
-//auto poolManager = PoolManager::getInstance();
-//if (!poolManager->getCurrentPool()->isClearing() || !poolManager->isObjectInPools(archer)) {
-if (archer == NULL){
-archer = new archerController();
-archer->initWithSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName(Constant::getArcherFrameName()));
-archer->autorelease();
-//archer = (archerController*)Sprite::createWithSpriteFrameName(Constant::getArcherFrameName());
-archer->initial();
-}
-return archer;
-}
-
-void archerController::initial() {
-auto aBody = PhysicsBody::createCircle(archer->getContentSize().height / 2);
-aBody->setRotationEnable(false);
-archer->setPhysicsBody(aBody);
-archer->setPosition(20, 100);
-archer->setAnchorPoint(Vec2(0.5, 0.5));
-archer->getPhysicsBody()->setContactTestBitmask(0x0000000F);
-//archerSprite->getPhysicsBody()->setCollisionBitmask(0x0000000F);
-archer->getPhysicsBody()->setCategoryBitmask(0x0000000F);
-archer->getPhysicsBody()->getFirstShape()->setTag(Constant::getArcherTag());
-}
-*/
-
-
-

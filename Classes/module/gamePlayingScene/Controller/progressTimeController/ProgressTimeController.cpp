@@ -1,5 +1,5 @@
 #include"ProgressTimeController.h"
-#include"../../Model/Constant/Constant.h"
+#include"../../../../public/Constant/Constant.h"
 #include"../../../../public/parameterManager/ParameterManager.h"
 
 ProgressTimeController* ProgressTimeController::progressTimeController = NULL;

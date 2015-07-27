@@ -44,7 +44,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // run
     director->runWithScene(scene);
 	
-	//new code here
+
+	//在这里添加新代码
 	//在AppDelegate中设置图片资源大小以达到自适应屏幕效果
 	Size visibleSize = ParameterManager::getVisibleSize();
 	glview->setDesignResolutionSize(visibleSize.width, visibleSize.height, ResolutionPolicy::EXACT_FIT);

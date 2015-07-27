@@ -1,6 +1,4 @@
 #include "cocos2d.h"
-#include"../../../../public/parameterManager/ParameterManager.h"
-#include"../../Model/Constant/Constant.h"
 USING_NS_CC;
 
 #define pi 3.141592654

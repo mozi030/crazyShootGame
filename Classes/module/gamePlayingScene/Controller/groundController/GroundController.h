@@ -3,7 +3,8 @@
 class GroundController :public cocos2d::Node{
 public:
 	static GroundController* getInstance();
-	void initial();
+	CREATE_FUNC(GroundController);
+	virtual bool init();
 
 private:
 	GroundController();

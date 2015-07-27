@@ -15,6 +15,7 @@ public:
 	void ClickDescription(Ref* sender);
 	void ClickLoadGame(Ref* sender);
 	void ClickTopRank(Ref* sender);
+	void ClickControl(Ref* sender);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

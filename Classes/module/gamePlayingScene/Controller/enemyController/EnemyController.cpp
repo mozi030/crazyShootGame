@@ -1,13 +1,16 @@
 #include"EnemyController.h"
 USING_NS_CC;
 #include "../../Model/Enemy/Enemy.h"
+#include"../../../../public/parameterManager/ParameterManager.h"
 
 EnemyController*EnemyController::enemyController = NULL;
 
 EnemyController::EnemyController(){}
 
 EnemyController::~EnemyController(){
-	enemyController = NULL;
+	if (enemyController != NULL){
+		enemyController = NULL;
+	}
 }
 
 void EnemyController::EnemyAttacked(cocos2d::Node* enemyNode, Vec2 position) {
@@ -29,13 +32,12 @@ EnemyController* EnemyController::getInstance() {
 }
 
 bool EnemyController::init() {
-
-	auto t = Enemy::create();
-	auto i = Enemy::create();
-	i->setParameter(1000, 200,1, 1);
-	t->setParameter(500, 200, 2, 2);
-	this->addChild(t);
-	this->addChild(i);
+	auto gameEnemyParameter = ParameterManager::getLevelInstance(ParameterManager::getCurrentLevel())->enemyParameter;
+	for (std::vector<EnemyParameter*>::iterator it = gameEnemyParameter.begin(); it != gameEnemyParameter.end(); it++) {
+		auto aEnemy = Enemy::create();
+		aEnemy->setParameter((*it)->initialPosition.x, (*it)->initialPosition.y, (*it)->blood, (*it)->mode);
+		this->addChild(aEnemy);
+	}
 
 	return true;
 }
