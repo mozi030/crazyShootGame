@@ -22,17 +22,7 @@ GameParameterForLevels::GameParameterForLevels(int _levelNum, ArcherParameter* _
 int ParameterManager::unlockedLevel = 1;
 int ParameterManager::currentLevel = 1;
 
-float ParameterManager::arrow1MaxVelocity = 600;
-float ParameterManager::getArrow1MaxVelocity() {
-	return arrow1MaxVelocity;
-}
-
-//float ParameterManager::enemyMovingTime = 60;
-//float ParameterManager::getEnemyMovingTime() {
-//	return enemyMovingTime;
-//}
-
-Vec2 ParameterManager::gravity = Vec2(0, -100);
+Vec2 ParameterManager::gravity = Vec2(0, -200);
 Vec2 ParameterManager::getGravity() {
 	return gravity;
 }
@@ -48,17 +38,17 @@ GameParameterForLevels* ParameterManager::getLevelInstance(int _levelNum) {
 	switch (_levelNum) {
 	case 1:
 		if (level1GameParameter == NULL) {
-			auto archer = new ArcherParameter(Vec2(100, 200));
+			auto archer = new ArcherParameter(Vec2(80, 120));
 
 			std::vector<EnemyParameter*>enemyParameterVector;
-			//enemyParameterVector.push_back(new EnemyParameter(Vec2(800, 200), 3, 1));
-			//enemyParameterVector.push_back(new EnemyParameter(Vec2(400, 200), 2, 1));
-			//enemyParameterVector.push_back(new EnemyParameter(Vec2(800, 400), 3, 2));
-			//enemyParameterVector.push_back(new EnemyParameter(Vec2(400, 400), 2, 2));
-			//enemyParameterVector.push_back(new EnemyParameter(Vec2(800, 200), 3, 3));
-			//enemyParameterVector.push_back(new EnemyParameter(Vec2(400, 200), 2, 3));
-			//enemyParameterVector.push_back(new EnemyParameter(Vec2(800, 400), 3, 3));
-			enemyParameterVector.push_back(new EnemyParameter(Vec2(400, 400), 2, 3));
+			enemyParameterVector.push_back(new EnemyParameter(Vec2(400, 120), 1, 1));
+			enemyParameterVector.push_back(new EnemyParameter(Vec2(50, 170), 1, 1));
+			enemyParameterVector.push_back(new EnemyParameter(Vec2(700, 170), 2, 2));
+			enemyParameterVector.push_back(new EnemyParameter(Vec2(800, 170), 2, 2));
+			enemyParameterVector.push_back(new EnemyParameter(Vec2(900, 170), 3, 3));
+			enemyParameterVector.push_back(new EnemyParameter(Vec2(300, 400), 3, 3));
+			enemyParameterVector.push_back(new EnemyParameter(Vec2(500, 400), 3, 3));
+			enemyParameterVector.push_back(new EnemyParameter(Vec2(800, 640), 3, 3));
 
 			level1GameParameter = new GameParameterForLevels(1, archer, enemyParameterVector);
 		}
@@ -95,3 +85,20 @@ int ParameterManager::getUnlockedLevel() {
 void ParameterManager::setUnlockedLevel(int _unlockedLevel) {
 	unlockedLevel = _unlockedLevel;
 }
+//µØ°å
+float ParameterManager::bottomGroundHeight = 75;
+float ParameterManager::getBottomGroundHeight() {
+	return bottomGroundHeight;
+}
+
+//¹­¼ý
+float ParameterManager::arrow1MaxVelocity = 600;
+float ParameterManager::getArrow1MaxVelocity() {
+	return arrow1MaxVelocity;
+}
+
+//µÐÈË
+//float ParameterManager::enemyMovingTime = 60;
+//float ParameterManager::getEnemyMovingTime() {
+//	return enemyMovingTime;
+//}

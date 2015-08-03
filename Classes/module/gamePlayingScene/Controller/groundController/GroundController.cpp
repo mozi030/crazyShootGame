@@ -22,6 +22,11 @@ GroundController* GroundController::getInstance() {
 bool GroundController::init() {
 	if (!Node::init()) { return false; }
 	this->addChild(ground::createBottomGround());
+	this->addChild(ground::createLeftGround());
+	this->addChild(ground::createRightGround());
+	this->addChild(ground::createBottomGround1());
+	this->addChild(ground::createBottomGround2());
+	this->addChild(ground::createBottomGround3());
 
 	return true;
 }

@@ -15,7 +15,17 @@ public:
 	void ClickDescription(Ref* sender);
 	void ClickLoadGame(Ref* sender);
 	void ClickTopRank(Ref* sender);
-	void ClickControl(Ref* sender);
+	void ClickTeam(Ref* sender);
+	void ClickClose(Ref* sender);
+	void menuCloseCallback(Ref* sender);
+
+private:
+	MenuItemImage* startItem;
+	MenuItemImage* descriptionItem;
+	MenuItemImage* loadGameItem;
+	MenuItemImage* topRankItem;
+	MenuItemImage* teamItem;
+	MenuItemImage* closeItem;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

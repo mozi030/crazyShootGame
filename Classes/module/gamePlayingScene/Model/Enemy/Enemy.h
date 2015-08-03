@@ -4,7 +4,9 @@ USING_NS_CC;
 #define pi 3.141592654
 
 class Enemy :public cocos2d::Node{
-public :
+public:
+	void onEnter();
+	void onExit();
 	/*
 	默认在图的右上角生成有一个模式为2的敌人
 	*/
@@ -16,6 +18,7 @@ public :
 	*/
 	Enemy* setParameter(float _locX, float locY, int _blood, int _mode);
 
+	void createInitial();
 	/*
 	创建一个哥布林：攻击力为5。（死亡条件：一支普通箭即可击杀）
 	*/
@@ -37,17 +40,24 @@ public :
 	*/
 	void createEnemyMagic(Enemy* _enemy);
 
+	void setLoc(float dt);
+
 	void updateTimeToArrowAttack(float dt);
+	void updateTimeToChangeArrowAngle(float dt, void* data, std::string name);
 
 	void setBlood(int _blood);
 
-	Sprite* createDispearSprite(int _mode,Vec2);
+	Sprite* createDispearSprite(int _mode, Vec2);
 
 	int attack(Sprite* s, int _mode);
+	void attackCancel(Sprite* s, int _mode);
 
 	int getPower();
 	int getBlood();
 	int getMode();
+	int getShadowNumber();
+	ProgressTimer* getProgressBar();
+	Sprite* getEnemySprite();
 
 private:
 	//初始的X坐标
@@ -66,4 +76,11 @@ private:
 	*/
 	int mode;
 	int power;
+
+	int attackShadowExist;
+	char trueNumber[20];
+	static int shadowNumber;
+	Sprite* enemySprite;
+
+	ProgressTimer* progressTimer;
 };

@@ -32,13 +32,27 @@ ArrowController* ArrowController::createAnArrow(float x_Begin, float y_Begin, fl
 	arrowSprite->setRotation(angle);
 
 	arrowSprite->setPosition(xBegin, yBegin);
+
 	float a = ParameterManager::getArrow1MaxVelocity();
-	float arrowVelocityX = ProgressTimeController::getInstance()->getProgressTimer()->getPercentage() / 100 * ParameterManager::getArrow1MaxVelocity() * cos(angle / 180 * pi) + 10;
-	float arrowVelocityY = ProgressTimeController::getInstance()->getProgressTimer()->getPercentage() / 100 * ParameterManager::getArrow1MaxVelocity() * sin(angle / 180 * pi) + 10;
+	float arrowVelocityX = ProgressTimeController::getInstance()->getProgressTimer()->getPercentage() / 100 * ParameterManager::getArrow1MaxVelocity() * cos(angle / 180 * pi) + 100;
+	float arrowVelocityY = ProgressTimeController::getInstance()->getProgressTimer()->getPercentage() / 100 * ParameterManager::getArrow1MaxVelocity() * sin(angle / 180 * pi) - 100;
 	arrowBody->setVelocity(Vec2(arrowVelocityX, -arrowVelocityY));
 
-	arrowSprite->getPhysicsBody()->setContactTestBitmask(0x0000F0F0);
-	arrowSprite->getPhysicsBody()->setCategoryBitmask(0x0000F0F0);
+	arrowSprite->getPhysicsBody()->setCategoryBitmask(0x0000000F); //种类
+	arrowSprite->getPhysicsBody()->setContactTestBitmask(0x000000FF);
+	arrowSprite->getPhysicsBody()->setCollisionBitmask(0x0000000F);
+	arrowSprite->getPhysicsBody()->setGroup(-2);
+
+	std::string name = "hello";
+	arrowSprite->schedule(CC_CALLBACK_1(ArrowController::updateTimeToChangeArrowAngle, arrowSprite, arrowSprite, name), 0, CC_REPEAT_FOREVER, 0, "end");
 
 	return arrowSprite;
+}
+
+void ArrowController::updateTimeToChangeArrowAngle(float dt, void* data,std::string name) {
+	auto anArrow = ((ArrowController*)data);
+	Vec2 velocity = anArrow->getPhysicsBody()->getVelocity();
+	float angle = -atan(velocity.y / velocity.x) / pi * 180;
+	if (velocity.x < 0) angle += 180;
+	anArrow->setRotation(angle);
 }

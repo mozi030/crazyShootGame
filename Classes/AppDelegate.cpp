@@ -50,7 +50,6 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	Size visibleSize = ParameterManager::getVisibleSize();
 	glview->setDesignResolutionSize(visibleSize.width, visibleSize.height, ResolutionPolicy::EXACT_FIT);
 
-
     return true;
 }
 

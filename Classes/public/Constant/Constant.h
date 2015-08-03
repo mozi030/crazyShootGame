@@ -13,11 +13,11 @@ public:
 	//gamePlayingScene
 	static string getLevel1MapCsdPath();
 	static string getGameEndedPath();
+	static string getGameOverCsdPath();
 
 	//arrow
 	static string getArrowPath();
 	static int getArrowTag();
-	static int getEnemyArrowTag();
 
 	//processBar
 	static string getProcessBar1Path();
@@ -34,6 +34,18 @@ public:
 	static int getEnemyTag1();
 	static int getEnemyTag2();
 	static int getEnemyTag3();
+	static int getEnemyArrowTag();
+	static string getEnemyBloodBackPath();
+	static string getEnemyBloodForePath();
+	static string getEnemySoldierMove();
+	static string getEnemySoldierDeath();
+	static string getEnemySoldierAttack();
+	static string getEnemyGoblinMove();
+	static string getEnemyGoblinDeath();
+	static string getEnemyGoblinAttack();
+	static string getEnemyArrowEnemyMove();
+	static string getEnemyArrowEnemyDeath();
+	static string getEnemyArrowEnemyAttack();
 
 	//archer
 	static string getArcherbodyPath();
@@ -48,6 +60,7 @@ public:
 
 	//ground
 	static int getBottomGroundTag();
+	static int getLeftGroundTag();
 
 private:
 
@@ -60,11 +73,11 @@ private:
 	//gamePlayingScene
 	static string level1MapCsdPath;
 	static string gameEndedPath;
+	static string gameOverCsdPath;
 
 	//arrow
 	static string arrowPath;
 	static int arrowTag;
-	static int enemyArrowTag;
 
 	//processBar
 	static string processBar1Path;
@@ -81,6 +94,18 @@ private:
 	static int enemyTag1;
 	static int enemyTag2;
 	static int enemyTag3;
+	static int enemyArrowTag;
+	static string enemyBloodBackPath;
+	static string enemyBloodForePath;
+	static string enemyArrowEnemyMove;
+	static string enemyArrowEnemyAttack;
+	static string enemyArrowEnemyDeath;
+	static string enemySoldierMove;
+	static string enemySoldierAttack;
+	static string enemySoldierDeath;
+	static string enemyGoblinMove;
+	static string enemyGoblinAttack;
+	static string enemyGoblinDeath;
 
 	//archer
 	static string archerFrameName;
@@ -95,4 +120,5 @@ private:
 
 	//ground
 	static int bottomGroundTag;
+	static int leftGroundTag;
 };

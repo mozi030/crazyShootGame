@@ -1,4 +1,4 @@
-﻿#include"archerController.h"
+﻿#include"ArcherController.h"
 #include"../../../../public/Constant/Constant.h"
 #include"../../../../public/ParameterManager/ParameterManager.h"
 
