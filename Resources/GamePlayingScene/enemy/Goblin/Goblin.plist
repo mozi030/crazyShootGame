@@ -82,6 +82,19 @@
                 <key>sourceSize</key>
                 <string>{71,73}</string>
             </dict>
+            <key>Goblin_15.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{102,0},{1,1}}</string>
+                <key>offset</key>
+                <string>{-49.5,49.5}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{1,1}}</string>
+                <key>sourceSize</key>
+                <string>{100,100}</string>
+            </dict>
             <key>Goblin_2.png</key>
             <dict>
                 <key>frame</key>
@@ -196,7 +209,7 @@
             <key>size</key>
             <string>{128,2048}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:f76d74529835339f0fd5cf9a235635aa$</string>
+            <string>$TexturePacker:SmartUpdate:cb0f8b0aa83e2df9dbafdccdfede3bc2$</string>
             <key>textureFileName</key>
             <string>Goblin.png</string>
         </dict>

@@ -1,4 +1,11 @@
+#ifndef __ENEMY_H__
+#define __ENEMY_H__
+
 #include "cocos2d.h"
+#include "../archer/archer.h"
+#include"../../../../public/parameterManager/ParameterManager.h"
+#include"../../../../public/Constant/Constant.h"
+
 USING_NS_CC;
 
 #define pi 3.141592654
@@ -10,61 +17,56 @@ public:
 	/*
 	默认在图的右上角生成有一个模式为2的敌人
 	*/
-	virtual bool init();
-	CREATE_FUNC(Enemy);
+	//CREATE_FUNC(Enemy);
+	//virtual bool init();
 
 	/*
 	在（_locX, _locY）处，生成一个血量被_blood，模式为_mode的敌人
 	*/
-	Enemy* setParameter(float _locX, float locY, int _blood, int _mode);
+	void setParameter(Vec2 initialLocation, int _blood);
 
-	void createInitial();
+	void createProgressTimer();
+	ProgressTimer* getProgressTimer();
+	Sprite* getEnemySprite();
 	/*
 	创建一个哥布林：攻击力为5。（死亡条件：一支普通箭即可击杀）
 	*/
-	void createEnemyOne();
+	//void createEnemyOne();
 
 	/*
 	创建一个战士战士：近战攻击，攻击力为10。（死亡条件：两箭才能击杀）
 	*/
-	void createEnemyTwo();
+	//void createEnemyTwo();
 
 	/*
 	弓箭手：不会移动，但会远程攻击，攻击力为10。（死亡条件：两箭才能击杀）
 	*/
-	void createEnemyArrow();
+	//void createEnemyArrow();
 
 	/*
 	魔法师：远程攻击，每3秒瞬时移动一个其他位置，是最难击杀的一个，
 	攻击力为15。（死亡条件：三箭才能击杀）
 	*/
-	void createEnemyMagic(Enemy* _enemy);
-
-	void setLoc(float dt);
-
-	void updateTimeToArrowAttack(float dt);
-	void updateTimeToChangeArrowAngle(float dt, void* data, std::string name);
+	//void createEnemyMagic(Enemy* _enemy);
 
 	void setBlood(int _blood);
-
-	Sprite* createDispearSprite(int _mode, Vec2);
-
-	int attack(Sprite* s, int _mode);
-	void attackCancel(Sprite* s, int _mode);
 
 	int getPower();
 	int getBlood();
 	int getMode();
 	int getShadowNumber();
-	ProgressTimer* getProgressBar();
-	Sprite* getEnemySprite();
 
-private:
+	virtual void setLoc(float dt) = 0;
+	virtual int attack() = 0;
+	virtual void attackCancel() = 0;
+	virtual Sprite* createDispearSprite(Vec2) = 0;
+
+protected:
 	//初始的X坐标
-	float locX;
+	//float locX;
 
 	//初始的Y坐标
-	float locY;
+	//float locY;
 
 	//	血量
 	int blood;
@@ -77,10 +79,17 @@ private:
 	int mode;
 	int power;
 
-	int attackShadowExist;
+	//方向,false为左，true为右
+	bool direction;
+
+	bool attackShadowExist;
 	char trueNumber[20];
-	static int shadowNumber;
+	int shadowNumber;
 	Sprite* enemySprite;
+	Sprite* attackSprite;
+	Action* currentAttackAction;
 
 	ProgressTimer* progressTimer;
 };
+
+#endif

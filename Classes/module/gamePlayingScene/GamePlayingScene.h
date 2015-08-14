@@ -1,9 +1,19 @@
+#ifndef __GAME_PLAYING_SCENE_H__
+#define __GAME_PLAYING_SCENE_H__
+
 #include "cocos2d.h"
 #include"Controller/archerController/archerController.h"
-#include"Controller/progressTimeController/ProgressTimeController.h"
-#include"Controller\groundController\GroundController.h"
+#include"Controller\edgeController\EdgeController.h"
 #include"Controller\enemyController\EnemyController.h"
-#include"Controller\arrowController\ArrowController.h"
+#include "cocostudio/CocoStudio.h"
+#include "ui/CocosGUI.h"
+#include"../../public/parameterManager/ParameterManager.h"
+#include"../../public/Constant/Constant.h"
+#include"Controller/setGameCacheController/SetGameCacheController.h"
+#include"Controller\GameoverController\GameoverController.h"
+#include"Controller\cameraController\CameraController.h"
+#include "Controller\ItemController\ItemController.h"
+#include"Controller\weatherController\weatherController.h"
 USING_NS_CC;
 
 class GamePlayingScene :public cocos2d::Scene{
@@ -15,29 +25,16 @@ public:
 	//void initial();
 	bool onTouchBegan(Touch *touch, Event *unused_event);
 	void onTouchEnded(Touch *touch, Event *unused_event);
-	void updateTimeForProgressBar(float dt);
 	bool onContactBegan(PhysicsContact& contact);
-
-	void ClickGameEnded(Ref* sender);
-	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event*event);
-	void onKeyReleased(EventKeyboard::KeyCode keyCode, Event*event);
-
-	/*void updateTimeToMoveLeft(float dt);
-	void updateTimeToMoveRight(float dt);*/
-
-	void GamePlayingScene::guanka(Ref* sender);
-	void GamePlayingScene::again(Ref* sender);
-	void GamePlayingScene::next(Ref* sender);
+	void onContactSeperate(PhysicsContact& contact);
 
 	void update(float dt);
 private:
-	static Camera* camera;
-
 	Sprite* backgroundSprite;
-	float totalTime;
+
+	bool isGameEnded;
 
 	Node *map;
-	ArcherController* player;
-
-	MenuItemImage*gameEndedItem;
 };
+
+#endif

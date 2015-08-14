@@ -1,8 +1,4 @@
 #include"BackgroundStoryScene.h"
-#include"../levelChooseScene/LevelChooseScene.h"
-#include "ui/CocosGUI.h"
-#include "cocostudio/CocoStudio.h"
-#include "../../public/Constant/Constant.h"
 
 USING_NS_CC;
 

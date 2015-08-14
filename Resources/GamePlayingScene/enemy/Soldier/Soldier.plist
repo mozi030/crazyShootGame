@@ -212,6 +212,19 @@
                 <key>sourceSize</key>
                 <string>{64,34}</string>
             </dict>
+            <key>Soldier_24.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{87,0},{1,1}}</string>
+                <key>offset</key>
+                <string>{-49.5,49.5}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{1,1}}</string>
+                <key>sourceSize</key>
+                <string>{100,100}</string>
+            </dict>
             <key>Soldier_3.png</key>
             <dict>
                 <key>frame</key>
@@ -313,7 +326,7 @@
             <key>size</key>
             <string>{128,1024}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:c63069d6db328d16c6d788c7b8c7ce46$</string>
+            <string>$TexturePacker:SmartUpdate:ab56f0a103bdf3b9651a02c2df89b7ad$</string>
             <key>textureFileName</key>
             <string>Soldier.png</string>
         </dict>

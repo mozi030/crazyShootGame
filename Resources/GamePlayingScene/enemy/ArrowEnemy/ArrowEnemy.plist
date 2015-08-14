@@ -186,6 +186,19 @@
                 <key>sourceSize</key>
                 <string>{177,101}</string>
             </dict>
+            <key>ArrowEnemy_22.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{254,120},{1,1}}</string>
+                <key>offset</key>
+                <string>{-49.5,49.5}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{1,1}}</string>
+                <key>sourceSize</key>
+                <string>{100,100}</string>
+            </dict>
             <key>ArrowEnemy_3.png</key>
             <dict>
                 <key>frame</key>
@@ -287,7 +300,7 @@
             <key>size</key>
             <string>{256,2048}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:ffa85fa2da26ad24a4e303be946ac1e0$</string>
+            <string>$TexturePacker:SmartUpdate:d089715096847f0e5998c3a7eb73b781$</string>
             <key>textureFileName</key>
             <string>ArrowEnemy.png</string>
         </dict>
